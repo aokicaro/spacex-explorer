@@ -25,9 +25,9 @@ export const launchReducer = createReducer(
   on(LaunchActions.loadLaunches, state => ({...state, loading: true, error: null})),
   on(LaunchActions.loadLaunchesSuccess, (state, { launches }) => ({ ...state, loading: false, launches })),
   on(LaunchActions.loadLaunchesFailure, (state, { error }) => ({ ...state,loading: false,error })),
-  on(LaunchActions.loadLaunchDetails, state => ({ ...state,detailsLoading: true,error: null })),
+  on(LaunchActions.loadLaunchDetails, state => ({ ...state, selectedLaunch: null, detailsLoading: true, error: null })),
   on(LaunchActions.loadLaunchDetailsSuccess, (state, { launch }) => ({ ...state,detailsLoading: false,selectedLaunch: launch })),
-  on(LaunchActions.loadLaunchDetailsFailure, (state, { error }) => ({ ...state, detailsLoading: false, error })),
+  on(LaunchActions.loadLaunchDetailsFailure, (state, { error }) => ({ ...state, selectedLaunch: null, detailsLoading: false, error})),
   
   on(LaunchActions.toggleFavorite, (state, { id }) => ({
     ...state,

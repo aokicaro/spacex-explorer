@@ -7,5 +7,4 @@ export const loadLaunchesFailure = createAction('[Launch Failure] Load Failure',
 export const loadLaunchDetails = createAction('[Launch Details] Load Launch Details', props<{id: string}>());
 export const loadLaunchDetailsSuccess = createAction('[Launch Details] Load Launch Details Success', props<{launch: Launch}>());
 export const loadLaunchDetailsFailure = createAction('[Launch Details] Load Launch Details Failure', props<{error: string}>());
-
 export const toggleFavorite = createAction('[Launch] Toogle Favorite Launch', props<{id: string}>());

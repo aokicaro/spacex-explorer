@@ -1,6 +1,7 @@
-import { CommonModule } from '@angular/common';
+﻿import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -10,26 +11,22 @@ import { MatInputModule } from '@angular/material/input';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
 
-import { selectAllLaunches, selectError, selectFavoriteIds, selectIsLoading } from '../../state/launch.selectors';
-import * as LaunchActions from '../../state/launch.actions';
 import { Launch } from '../../model/Launch.model';
-
+import * as LaunchActions from '../../state/launch.actions';
+import { selectAllLaunches, selectError, selectFavoriteIds, selectIsLoading } from '../../state/launch.selectors';
 
 @Component({
   selector: 'app-launches-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule, MatChipsModule, MatButtonModule],
-  templateUrl: './launches-list.html'
+  imports: [CommonModule, FormsModule, RouterLink, MatCardModule, MatFormFieldModule, MatInputModule,  MatIconModule, MatChipsModule, MatButtonModule],
+  templateUrl: './launches-list.html',
+  styleUrl: './launches-list.scss',
 })
 export class LaunchesListComponent implements OnInit {
   private readonly store = inject(Store);
   private readonly searchTermSubject = new BehaviorSubject<string>('');
-  
+
   searchTerm: string = '';
-  readonly launches$ = this.store.select(selectAllLaunches);
-  readonly favoriteIds$ = this.store.select(selectFavoriteIds);
-  readonly loading$ = this.store.select(selectIsLoading);
-  
 
   readonly viewModel$ = combineLatest({
     launches: this.store.select(selectAllLaunches),
@@ -43,7 +40,6 @@ export class LaunchesListComponent implements OnInit {
       launches: this.filterLaunches(launches, searchTerm),
     })),
   );
-
 
   ngOnInit(): void {
     this.store.dispatch(LaunchActions.loadLaunches());
@@ -73,5 +69,4 @@ export class LaunchesListComponent implements OnInit {
       launch.name.toLowerCase().includes(normalizedSearch),
     );
   }
-
 }

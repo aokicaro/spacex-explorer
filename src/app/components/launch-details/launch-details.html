@@ -1,0 +1,86 @@
+﻿<div class="details-page" *ngIf="viewModel$ | async as viewModel">
+  <a mat-button routerLink="/" class="back-link">
+    <mat-icon>arrow_back</mat-icon>
+    Back to launches
+  </a>
+
+  <p *ngIf="viewModel.loading" class="state-message">Loading launch details...</p>
+
+  <p *ngIf="viewModel.error" class="state-message error-message">
+    {{ viewModel.error }}
+  </p>
+
+  <p *ngIf="!viewModel.loading && !viewModel.error && !viewModel.launch" class="state-message">
+    Launch not found.
+  </p>
+
+  <mat-card *ngIf="viewModel.launch as launch" class="details-card">
+    <mat-card-header>
+      <img
+        *ngIf="getPatchUrl(launch) as patchUrl"
+        mat-card-avatar
+        [src]="patchUrl"
+        alt="Mission patch"
+      />
+      <mat-card-title>{{ launch.name }}</mat-card-title>
+      <mat-card-subtitle>Flight n°{{ launch.flight_number }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="details-content">
+      <section class="hero-section">
+        <img
+          *ngIf="getPatchUrl(launch) as patchUrl"
+          [src]="patchUrl"
+          [alt]="launch.name + ' mission patch'"
+          class="mission-patch"
+        />
+
+        <div class="launch-summary">
+          <mat-chip-set>
+            <mat-chip
+              [class.status-success]="launch.success === true"
+              [class.status-error]="launch.success === false"
+            >
+              {{ getStatusLabel(launch.success) }}
+            </mat-chip>
+          </mat-chip-set>
+
+          <p class="date-text">
+            <mat-icon>calendar_today</mat-icon>
+            {{ launch.date_local | date: 'fullDate' }}
+          </p>
+
+          <button
+            mat-flat-button
+            type="button"
+            color="primary"
+            (click)="toggleFavorite(launch.id)"
+          >
+            <mat-icon>{{ viewModel.isFavorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+            {{ viewModel.isFavorite ? 'Remove favorite' : 'Add favorite' }}
+          </button>
+        </div>
+      </section>
+
+      <section class="details-section">
+        <h2>Mission details</h2>
+        <p>{{ launch.details || 'No details available for this launch.' }}</p>
+      </section>
+
+      <section class="links-section">
+        <h2>External links</h2>
+        <div class="links-grid">
+          <a *ngIf="launch.links.webcast" mat-stroked-button [href]="launch.links.webcast" target="_blank">
+            Webcast
+          </a>
+          <a *ngIf="launch.links.article" mat-stroked-button [href]="launch.links.article" target="_blank">
+            Article
+          </a>
+          <a *ngIf="launch.links.wikipedia" mat-stroked-button [href]="launch.links.wikipedia" target="_blank">
+            Wikipedia
+          </a>
+        </div>
+      </section>
+    </mat-card-content>
+  </mat-card>
+</div>

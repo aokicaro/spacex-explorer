@@ -1,4 +1,4 @@
-<div class="container-launches" *ngIf="viewModel$ | async as viewModel">
+﻿<div class="container-launches" *ngIf="viewModel$ | async as viewModel">
   <h1 class="mat-headline-medium title">SpaceX Launch Explorer</h1>
 
   <mat-form-field appearance="outline" class="search-field">
@@ -18,7 +18,7 @@
   <p *ngIf="viewModel.error">
     {{ viewModel.error }}
   </p>
-  
+
   <p *ngIf="!viewModel.loading && !viewModel.error && viewModel.launches.length === 0">
     No launches found.
   </p>
@@ -31,7 +31,7 @@
       <mat-card-header>
         <img
           mat-card-avatar
-          [src]="launch.links.patch.small"
+          [src]="launch.links.patch.small || ''"
           alt="Mission patch"
         />
         <mat-card-title>{{ launch.name }}</mat-card-title>
@@ -54,6 +54,10 @@
             {{ launch.success ? 'Success' : 'Failure' }}
           </mat-chip>
         </mat-chip-set>
+
+        <button mat-button [routerLink]="['/launch', launch.id]">
+          Details
+        </button>
 
         <button
           mat-icon-button

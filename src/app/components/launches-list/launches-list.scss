@@ -1,5 +1,5 @@
 .container-launches {
-  padding: 24px;
+  padding: clamp(16px, 4vw, 24px);
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -16,8 +16,8 @@
 
 .launches-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: clamp(16px, 4vw, 24px);
 }
 
 .launch-card {
@@ -54,7 +54,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
   padding: 8px 16px;
+  flex-wrap: wrap;
 }
 
 

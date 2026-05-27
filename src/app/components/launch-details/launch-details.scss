@@ -1,0 +1,95 @@
+﻿.details-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.back-link {
+  margin-bottom: 16px;
+}
+
+.details-card {
+  overflow: hidden;
+}
+
+.details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 24px;
+}
+
+.hero-section {
+  display: grid;
+  grid-template-columns: minmax(160px, 260px) 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.mission-patch {
+  width: 100%;
+  max-height: 260px;
+  object-fit: contain;
+}
+
+.launch-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.date-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #64748b;
+}
+
+.details-section h2,
+.links-section h2 {
+  margin: 0 0 8px;
+  color: #1e293b;
+}
+
+.details-section p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.links-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.state-message {
+  margin: 24px 0;
+  color: #475569;
+}
+
+.error-message {
+  color: #c82333;
+}
+
+.status-success {
+  background-color: #e2fbe8;
+  color: #1e7e34;
+}
+
+.status-error {
+  background-color: #fde8e8;
+  color: #c82333;
+}
+
+@media (max-width: 720px) {
+  .details-page {
+    padding: 16px;
+  }
+
+  .hero-section {
+    grid-template-columns: 1fr;
+  }
+}
