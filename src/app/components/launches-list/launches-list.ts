@@ -1,14 +1,18 @@
-import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SpacexService } from '../../services/spacex';
-import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { Store } from '@ngrx/store';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
+
+import { selectAllLaunches, selectError, selectFavoriteIds, selectIsLoading } from '../../state/launch.selectors';
+import * as LaunchActions from '../../state/launch.actions';
+import { Launch } from '../../model/Launch.model';
 
 
 @Component({
@@ -18,29 +22,56 @@ import { MatInputModule } from '@angular/material/input';
   templateUrl: './launches-list.html'
 })
 export class LaunchesListComponent implements OnInit {
-  allLaunches: any[] = [];
-  filteredLaunches: any[] = [];
-  searchTerm: string = '';
+  private readonly store = inject(Store);
+  private readonly searchTermSubject = new BehaviorSubject<string>('');
   
-  private sub! : Subscription; 
+  searchTerm: string = '';
+  readonly launches$ = this.store.select(selectAllLaunches);
+  readonly favoriteIds$ = this.store.select(selectFavoriteIds);
+  readonly loading$ = this.store.select(selectIsLoading);
+  
 
-  constructor(private spacexService: SpacexService) {}
+  readonly viewModel$ = combineLatest({
+    launches: this.store.select(selectAllLaunches),
+    favoriteIds: this.store.select(selectFavoriteIds),
+    loading: this.store.select(selectIsLoading),
+    error: this.store.select(selectError),
+    searchTerm: this.searchTermSubject,
+  }).pipe(
+    map(({ launches, searchTerm, ...state }) => ({
+      ...state,
+      launches: this.filterLaunches(launches, searchTerm),
+    })),
+  );
 
 
   ngOnInit(): void {
-    this.loadLaunches();
+    this.store.dispatch(LaunchActions.loadLaunches());
   }
 
-  loadLaunches() {
-    this.sub = this.spacexService.getPastLaunches().subscribe(data => {
-      this.allLaunches = data;
-      this.filteredLaunches = data;
-    });
+  onSearchChange(searchTerm: string): void {
+    this.searchTerm = searchTerm;
+    this.searchTermSubject.next(searchTerm);
   }
 
-  onSearchChange() {    
-    this.filteredLaunches = this.allLaunches.filter(launch => 
-      launch.name.includes(this.searchTerm)
+  toggleFavorite(id: string): void {
+    this.store.dispatch(LaunchActions.toggleFavorite({ id }));
+  }
+
+  trackByLaunchId(_: number, launch: Launch): string {
+    return launch.id;
+  }
+
+  private filterLaunches(launches: Launch[], searchTerm: string): Launch[] {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+
+    if (!normalizedSearch) {
+      return launches;
+    }
+
+    return launches.filter((launch) =>
+      launch.name.toLowerCase().includes(normalizedSearch),
     );
   }
+
 }

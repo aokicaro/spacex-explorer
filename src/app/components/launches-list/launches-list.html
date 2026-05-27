@@ -1,24 +1,39 @@
-<div class="container-launches">
+<div class="container-launches" *ngIf="viewModel$ | async as viewModel">
   <h1 class="mat-headline-medium title">SpaceX Launch Explorer</h1>
-
 
   <mat-form-field appearance="outline" class="search-field">
     <mat-label>Search for a mission...</mat-label>
-    <input 
+    <input
       matInput
-      type="text" 
-      [(ngModel)]="searchTerm" 
-      (ngModelChange)="onSearchChange()" 
+      type="text"
+      [ngModel]="searchTerm"
+      (ngModelChange)="onSearchChange($event)"
       placeholder="Ex. Crew-1"
     />
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
 
+  <p *ngIf="viewModel.loading">Loading launches...</p>
 
-  <div class="launches-grid">
-    <mat-card *ngFor="let launch of filteredLaunches" class="launch-card">
+  <p *ngIf="viewModel.error">
+    {{ viewModel.error }}
+  </p>
+  
+  <p *ngIf="!viewModel.loading && !viewModel.error && viewModel.launches.length === 0">
+    No launches found.
+  </p>
+
+  <div class="launches-grid" *ngIf="!viewModel.loading && !viewModel.error">
+    <mat-card
+      *ngFor="let launch of viewModel.launches; trackBy: trackByLaunchId"
+      class="launch-card"
+    >
       <mat-card-header>
-        <img mat-card-avatar [src]="launch.links?.patch?.small" alt="Mission's patch">
+        <img
+          mat-card-avatar
+          [src]="launch.links.patch.small"
+          alt="Mission patch"
+        />
         <mat-card-title>{{ launch.name }}</mat-card-title>
         <mat-card-subtitle>Flight n°{{ launch.flight_number }}</mat-card-subtitle>
       </mat-card-header>
@@ -26,16 +41,30 @@
       <mat-card-content class="card-content">
         <p class="date-text">
           <mat-icon>calendar_today</mat-icon>
-          {{ launch.date_local | date:'dd/MM/yyyy' }}
+          {{ launch.date_local | date: 'dd/MM/yyyy' }}
         </p>
       </mat-card-content>
 
       <mat-card-actions class="card-actions">
         <mat-chip-set>
-          <mat-chip [class.status-success]="launch.success" [class.status-error]="!launch.success">
+          <mat-chip
+            [class.status-success]="launch.success"
+            [class.status-error]="!launch.success"
+          >
             {{ launch.success ? 'Success' : 'Failure' }}
           </mat-chip>
         </mat-chip-set>
+
+        <button
+          mat-icon-button
+          type="button"
+          aria-label="Toggle favorite"
+          (click)="toggleFavorite(launch.id)"
+        >
+          <mat-icon>
+            {{ viewModel.favoriteIds.includes(launch.id) ? 'favorite' : 'favorite_border' }}
+          </mat-icon>
+        </button>
       </mat-card-actions>
     </mat-card>
   </div>
