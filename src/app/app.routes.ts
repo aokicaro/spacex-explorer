@@ -1,8 +1,13 @@
 ﻿import { Routes } from '@angular/router';
-import { LaunchesListComponent } from './components/launches-list/launches-list';
-
 export const routes: Routes = [
-  { path: '', component: LaunchesListComponent, pathMatch: 'full' },
+  {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./components/launches-list/launches-list').then(
+        (component) => component.LaunchesListComponent,
+      ),
+  },
   {
     path: 'launch/:id',
     loadComponent: () =>
