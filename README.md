@@ -1,38 +1,114 @@
-# Technical Assessment: Angular & NgRx "SpaceX Explorer" v1.0
+# SpaceX Explorer
 
-Welcome! The goal of this technical assessment is to refactor, debug, and finalize an Angular application built for exploring SpaceX rocket launches. 
+Angular application for exploring past SpaceX launches using Angular Material and NgRx.
 
-The application uses **Angular Material** for the UI and **NgRx** for global state management. However, the previous developer rushed the initial implementation. The current codebase contains memory leaks, performance bottlenecks, a critical architectural flaw inside the NgRx Reducer, and missing core async features.
+## Features
 
+- Lists past SpaceX launches.
+- Searches launches by mission name.
+- Shows launch details at `/launch/:id`.
+- Manages favorite launches with NgRx Store.
+- Keeps favorites available while navigating between list and details pages.
+- Uses NgRx Effects for API requests.
+- Provides a production Docker setup with Nginx.
 
-## 🎯 Your Missions
+## Tech Stack
 
-1. **Implement the Missing NgRx Effect:**
-   - Currently, the component triggers raw HTTP calls directly via the service. Refactor this logic so the component dispatches a `loadLaunches` action instead.
-   - Create a **NgRx Effect** from scratch to handle the asynchronous stream fetching data from the SpaceX API.
-2. **Feature Development (Details View & Favorites):**
-   - Implement the launch details view, mapped to the `/launch/:id` route.
-   - Leverage the NgRx store to manage the "Favorite" state of a launch. This state must persist seamlessly when navigating back and forth between the list and details views.
-3. **Project configuration :** 
-    - Configure the project to be production ready
+- Angular
+- Angular Material
+- NgRx Store
+- NgRx Effects
+- RxJS
+- Docker
+- Nginx
 
-## 🛠️ Technical Specifications
-- **List Endpoint:** `https://api.spacexdata.com/v4/launches/past`
-- **Details Endpoint:** `https://api.spacexdata.com/v4/launches/{id}`
-- Angular Material is pre-installed. Baseline layouts and grid styling can be found in the component's SCSS file.
+## API
 
-## 📋 Evaluation Criteria
-- **Clean Architecture:** Proper separation of concerns (Smart vs. Presentational components, encapsulating logic away from templates).
-- **RxJS & NgRx Mastery:** Clean stream manipulation, avoiding nesting subscriptions, keeping the state strictly immutable, and leveraging memoized selectors.
-- **Modern Angular Standards:** Proper usage of Standalone components and modern control flow (or Signals if you choose to introduce them).
-- **TypeScript Rigor:** Explicit interface definitions for API payloads. The use of `any` is strictly prohibited.
-- **Git Hygiene:** Clean, atomic, and descriptive commit history.
+The application uses the public SpaceX API:
 
-## Bonus
-- Setup a docker production ready for this app
+```text
+https://api.spacexdata.com/v4/launches/past
+https://api.spacexdata.com/v4/launches/{id}
+```
 
-## 📦 Submission Guidelines
-1. Push your code to a public GitHub repository.
-2. Ensure your `README.md` includes straightforward instructions to install and run the project locally 
+## Requirements
 
-Good luck! We look forward to reviewing your code.
+- Node.js
+- npm
+- Docker, optional for containerized execution
+
+## Install
+
+```bash
+npm install
+```
+
+## Run Locally
+
+```bash
+npm start
+```
+
+Open the application at:
+
+```text
+http://localhost:4200
+```
+
+## Build
+
+```bash
+npm run build
+```
+
+The production build is generated in:
+
+```text
+dist/spaceX_kata/browser
+```
+
+## Test
+
+```bash
+npm test -- --watch=false
+```
+
+## Run With Docker
+
+Build the Docker image:
+
+```bash
+docker build -t spacex-explorer .
+```
+
+Run the container:
+
+```bash
+docker run --rm --name spacex-explorer -p 8080:80 spacex-explorer
+```
+
+Open the application at:
+
+```text
+http://localhost:8080
+```
+
+## Project Structure
+
+```text
+src/app/components
+src/app/model
+src/app/services
+src/app/state
+```
+
+- `components`: standalone Angular components for list and details pages.
+- `model`: TypeScript interfaces used by the application.
+- `services`: SpaceX API access.
+- `state`: NgRx actions, reducer, selectors, and effects.
+
+## Production Notes
+
+- The list and details pages are lazy-loaded through Angular routes.
+- The Docker image uses a multi-stage build.
+- Nginx serves the compiled Angular app and redirects SPA routes to `index.html`.
